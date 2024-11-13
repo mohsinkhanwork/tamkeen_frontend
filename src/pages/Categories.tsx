@@ -47,7 +47,7 @@ const Categories = () => {
   });
 
   // Update query key when filters change
-  const { data: products, isLoading: isProductLoading } = useQuery({
+  const { data: products = { data: [] }, isLoading: isProductLoading } = useQuery({
     queryKey: ["products", filters],
     queryFn: () => fetchProducts(filters),
   });
@@ -169,9 +169,11 @@ const Categories = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {isProductLoading
               ? Array(9).fill(<LoadingCard />)
-              : products?.map((product: any) => (
-                  <ProductCard key={product.title} {...product} />
-                ))}
+              : Array.isArray(products?.data)
+              ? products.data.map((product: any) => (
+                  <ProductCard key={product.id} {...product} />
+                ))
+              : <p>No products available.</p>}
           </div>
 
           {/* Pagination */}
